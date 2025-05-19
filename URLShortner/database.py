@@ -1,8 +1,9 @@
+import os
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped, mapped_column, sessionmaker
 from sqlalchemy import create_engine, Boolean, Column
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///shortner.db"
+SQLALCHEMY_DATABASE_URL = os.environ['DB_URL']
 
 class BaseModel:
     
@@ -17,6 +18,6 @@ Session = sessionmaker(bind=engine, autoflush=False, autocommit=False, expire_on
 def get_db():
     db = Session()
     try:
-        yield db
+        return db
     finally:
         db.close()

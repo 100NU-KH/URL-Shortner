@@ -1,20 +1,25 @@
-from flask import Flask, Blueprint
-import database
+import yaml
+from flask import Flask, Blueprint, redirect
+from database import get_db
 from apps.shortner.routes.create import shortner_app_route
 from apps.shortner import models
 
 app = Flask(__name__)
 
+
+
 ###### Blueprint test ######
-test_blue = Blueprint('test', __name__)
+root_url = Blueprint('root', __name__)
 
 # test url /test-base/test-url
-@test_blue.route("/test-url")
-def dashboard():
-    return {"message": "ok"}
+@root_url.route("/<hash_str>")
+def dashboard(hash_str):
+    db = get_db()
+    tinyurl_obj = db.query(models.URLMapper).filter(models.URLMapper.hash_str==hash_str).first()
+    return redirect(tinyurl_obj.url,code=302)
 #############################
 
-app.register_blueprint(test_blue, url_prefix='/test-base')
+app.register_blueprint(root_url, url_prefix='/')
 app.register_blueprint(shortner_app_route, url_prefix='/shortner')
 
 
