@@ -7,11 +7,8 @@ from apps.shortner import models
 app = Flask(__name__)
 
 
-
-###### Blueprint test ######
 root_url = Blueprint('root', __name__)
 
-# test url /test-base/test-url
 @root_url.route("/<hash_str>")
 def dashboard(hash_str):
     db = get_db()
@@ -23,7 +20,6 @@ def dashboard(hash_str):
         }), status=400,
         mimetype="application/json")
     return redirect(tinyurl_obj.url,code=302)
-#############################
 
 app.register_blueprint(root_url, url_prefix='/')
 app.register_blueprint(shortner_app_route, url_prefix='/shortner')
